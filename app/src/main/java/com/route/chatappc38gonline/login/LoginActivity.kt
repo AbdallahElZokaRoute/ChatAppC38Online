@@ -1,6 +1,7 @@
-package com.route.chatappc38gonline.register
+package com.route.chatappc38gonline.login
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,9 +25,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -39,38 +37,66 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.route.chatappc38gonline.R
+import com.route.chatappc38gonline.home.HomeActivity
+import com.route.chatappc38gonline.register.RegisterActivity
 import com.route.chatappc38gonline.register.ui.theme.ChatAppC38GOnlineTheme
 
-class RegisterActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity(), Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ChatAppC38GOnlineTheme {
                 // A surface container using the 'background' color from the theme
-                RegisterContent()
+                LoginContent(navigator = this)
             }
         }
+    }
+
+    override fun openHomeActivity() {
+        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun openRegisterActivity() {
+        val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+        startActivity(intent)
     }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterContent(viewModel: RegisterViewModel = viewModel()) {
-    Scaffold(modifier = Modifier.fillMaxSize()) {
+fun LoginContent(viewModel: LoginViewModel = viewModel(), navigator: Navigator) {
+    viewModel.navigator = navigator
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        topBar = {
+
+            Text(
+                text = "Login", modifier = Modifier
+                    .padding(vertical = 8.0.dp)
+                    .fillMaxWidth(),
+                style = TextStyle(
+                    color = colorResource(id = R.color.white),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            )
+        }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,11 +106,6 @@ fun RegisterContent(viewModel: RegisterViewModel = viewModel()) {
                 )
         ) {
             Spacer(modifier = Modifier.fillMaxHeight(0.4F))
-            ChatAuthTextField(
-                state = viewModel.firstNameState,
-                label = "First name",
-                errorState = viewModel.firstNameError
-            )
             ChatAuthTextField(
                 state = viewModel.emailState,
                 label = "Email",
@@ -97,8 +118,16 @@ fun RegisterContent(viewModel: RegisterViewModel = viewModel()) {
                 isPassword = true
             )
             Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            ChatButton(buttonText = "Register") {
+            ChatButton(buttonText = "Login") {
                 viewModel.sendAuthDataToFirebase()
+            }
+            TextButton(onClick = {
+                viewModel.navigateToRegisterScreen()
+            }) {
+                Text(
+                    text = "or Create my account",
+                    style = TextStyle(color = colorResource(id = R.color.colorGrey))
+                )
             }
             LoadingDialog()
             ChatAlertDialog()
@@ -146,7 +175,7 @@ fun ChatAuthTextField(
 }
 
 @Composable
-fun LoadingDialog(viewModel: RegisterViewModel = viewModel()) {
+fun LoadingDialog(viewModel: LoginViewModel = viewModel()) {
     if (viewModel.showLoading.value)
         Dialog(onDismissRequest = { }) {
             Box(
@@ -171,7 +200,7 @@ fun LoadingDialog(viewModel: RegisterViewModel = viewModel()) {
 
 
 @Composable
-fun ChatAlertDialog(viewModel: RegisterViewModel = viewModel()) {
+fun ChatAlertDialog(viewModel: LoginViewModel = viewModel()) {
     if (viewModel.message.value.isNotEmpty())
         AlertDialog(
 
@@ -229,6 +258,14 @@ fun ChatButton(buttonText: String, onButtonClick: () -> Unit) {
 @Composable
 fun GreetingPreview2() {
     ChatAppC38GOnlineTheme {
-        RegisterContent()
+        LoginContent(navigator = object : Navigator {
+            override fun openHomeActivity() {
+
+            }
+
+            override fun openRegisterActivity() {
+            }
+
+        })
     }
 }

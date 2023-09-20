@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "292177570466",
+    "project_id": "chat-c38online",
+    "storage_bucket": "chat-c38online.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292177570466:android:671a84f2add2e26eb4c5fb",
+        "android_client_info": {
+          "package_name": "com.route.chatappc38gonline"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGHl0cbl5yneebwe6a5lFskHg60bf1VA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

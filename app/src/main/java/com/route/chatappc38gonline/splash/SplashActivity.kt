@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.route.chatappc38gonline.R
+import com.route.chatappc38gonline.login.LoginActivity
 import com.route.chatappc38gonline.register.RegisterActivity
 import com.route.chatappc38gonline.ui.theme.ChatAppC38GOnlineTheme
 
@@ -26,7 +27,7 @@ class SplashActivity : ComponentActivity() {
             ChatAppC38GOnlineTheme {
                 // A surface container using the 'background' color from the theme
                 Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(this@SplashActivity, RegisterActivity::class.java)
+                    val intent = Intent(this@SplashActivity, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
                 }, 2000)
