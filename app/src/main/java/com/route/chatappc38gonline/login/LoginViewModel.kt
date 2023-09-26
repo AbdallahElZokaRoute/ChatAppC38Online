@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.route.chatappc38gonline.AppUser
+import com.route.chatappc38gonline.model.AppUser
 import com.route.chatappc38gonline.database.getUserFromFirestoreDB
 
 class LoginViewModel : ViewModel() {

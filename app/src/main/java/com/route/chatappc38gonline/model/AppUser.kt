@@ -1,4 +1,4 @@
-package com.route.chatappc38gonline
+package com.route.chatappc38gonline.model
 
 data class AppUser(
     val id: String? = null,
