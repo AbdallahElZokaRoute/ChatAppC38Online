@@ -280,12 +280,11 @@ fun ChatAlertDialog(viewModel: AddRoomViewModel = viewModel(), navigator: Naviga
 
             onDismissRequest = {
                 viewModel.message.value = ""
-                viewModel.navigator?.navigateUp()
             },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.message.value = ""
-
+                    viewModel.navigateUp()
                 }) { Text(text = "OK") }
             },
             text = { Text(text = viewModel.message.value) },

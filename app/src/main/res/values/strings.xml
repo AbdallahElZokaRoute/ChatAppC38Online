@@ -8,4 +8,5 @@
     <string name="create_new_room">Create new Room</string>
     <string name="room_title">Room Title</string>
     <string name="room_desc">Room Description</string>
+    <string name="title_activity_chat">ChatActivity</string>
 </resources>

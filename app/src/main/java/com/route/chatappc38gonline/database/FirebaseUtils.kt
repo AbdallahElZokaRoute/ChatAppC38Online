@@ -4,9 +4,12 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.route.chatappc38gonline.model.AppUser
+import com.route.chatappc38gonline.model.Message
 import com.route.chatappc38gonline.model.Room
 
 // DRY <-> Don't Repeat Yourself
@@ -54,4 +57,42 @@ fun addRoomToFirestroeDB(
         .set(room)
         .addOnSuccessListener(onSuccessListener)
         .addOnFailureListener(onFailureListener)
+}
+
+fun getRoomsFromFirestoreDB(
+    onSuccessListener: OnSuccessListener<QuerySnapshot>,
+    onFailureListener: OnFailureListener
+) {
+    val roomsCollection = getCollectionRef(Room.COLLECTION_NAME)
+    roomsCollection.get()
+        .addOnSuccessListener(onSuccessListener)
+        .addOnFailureListener(onFailureListener)
+}
+
+fun getMessagesRef(roomId: String): CollectionReference {
+    val roomCollectionRef = getCollectionRef(Room.COLLECTION_NAME)
+    val roomDoc = roomCollectionRef.document(roomId)
+    return roomDoc.collection(Message.COLLECTION_NAME)
+
+}
+
+fun addMessageToFirestoreDB(
+    message: Message,
+    roomId: String,
+    onSuccessListener: OnSuccessListener<Void>,
+    onFailureListener: OnFailureListener
+) {
+    val messageCollection = getMessagesRef(roomId)
+    val messageDoc = messageCollection.document()
+    message.id = messageDoc.id
+    messageDoc.set(message)
+        .addOnSuccessListener(onSuccessListener)
+        .addOnFailureListener(onFailureListener)
+
+}
+
+fun getMessagesFromFirestoreDB(roomId: String, listener: EventListener<QuerySnapshot>) {
+    val messageCollection = getMessagesRef(roomId = roomId)
+    messageCollection
+        .addSnapshotListener(listener)
 }

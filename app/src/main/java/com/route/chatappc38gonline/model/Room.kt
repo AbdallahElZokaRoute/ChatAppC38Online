@@ -1,13 +1,21 @@
 package com.route.chatappc38gonline.model
 
+import android.os.Parcel
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Room(
-    var roomId: String?,
-    val name: String?,
-    val description: String?,
-    val categoryID: String
-) {
+    var roomId: String? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val categoryID: String? = null
+) : Parcelable {
+
 
     companion object {
         const val COLLECTION_NAME = "Room"
     }
+
+
 }

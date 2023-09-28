@@ -16,29 +16,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.route.chatappc38gonline.R
+import com.route.chatappc38gonline.home.HomeActivity
 import com.route.chatappc38gonline.login.LoginActivity
 import com.route.chatappc38gonline.register.RegisterActivity
 import com.route.chatappc38gonline.ui.theme.ChatAppC38GOnlineTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 
-class SplashActivity : ComponentActivity() {
+class SplashActivity : ComponentActivity(), Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ChatAppC38GOnlineTheme {
                 // A surface container using the 'background' color from the theme
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(this@SplashActivity, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }, 2000)
-                SplashContent()
+                SplashContent(navigator = this@SplashActivity)
             }
         }
+    }
+
+    override fun navigateToHomeScreen() {
+        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun navigateToLoginScreen() {
+        val intent = Intent(this@SplashActivity, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
 
 @Composable
-fun SplashContent() {
+fun SplashContent(
+    viewModel: SplashViewModel = viewModel(),
+    navigator: Navigator
+) {
+    viewModel.navigator = navigator
+    viewModel.navigate()
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (logo, signature) = createRefs()
         Image(
@@ -73,6 +87,15 @@ fun SplashContent() {
 @Composable
 fun GreetingPreview() {
     ChatAppC38GOnlineTheme {
-        SplashContent()
+        SplashContent(navigator = object : Navigator {
+            override fun navigateToHomeScreen() {
+
+            }
+
+            override fun navigateToLoginScreen() {
+
+            }
+
+        })
     }
 }
