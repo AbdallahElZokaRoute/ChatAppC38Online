@@ -5,16 +5,43 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentChange
+import com.route.chatappc38gonline.database.addMessageToFirestoreDB
 import com.route.chatappc38gonline.database.getMessagesFromFirestoreDB
+import com.route.chatappc38gonline.model.DataUtils
 import com.route.chatappc38gonline.model.Message
 import com.route.chatappc38gonline.model.Room
+import java.util.Date
 
 class ChatViewModel : ViewModel() {
     var navigator: Navigator? = null
     var room: Room? = null
     val messagesListState = mutableStateOf<List<Message>>(listOf())
+    val messageFieldState = mutableStateOf("")
     fun navigateUp() {
         navigator?.navigateUp()
+    }
+
+    fun addMessageToFirestore() {
+        if (messageFieldState.value.isEmpty() || messageFieldState.value.isBlank())
+            return
+        val message = Message(
+            content = messageFieldState.value,
+            dateTime = Date().time,
+            senderId = DataUtils.appUser?.id,
+            senderName = DataUtils.appUser?.firstName,
+            roomId = room?.roomId
+        )
+
+        addMessageToFirestoreDB(
+            message,
+            roomId = room?.roomId!!,
+            onSuccessListener = {
+                messageFieldState.value = ""
+            },
+            onFailureListener = {
+                Log.e("Tag", it.localizedMessage)
+            })
+
     }
 
     fun getMessagesFromFirestore() {
@@ -34,7 +61,11 @@ class ChatViewModel : ViewModel() {
                     else -> {}
                 }
             }
-            messagesListState.value = mutableList
+            val newList = mutableListOf<Message>()
+            newList.addAll(mutableList)
+            newList.addAll(messagesListState.value)
+
+            messagesListState.value = newList.toList()
         })
     }
 

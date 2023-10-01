@@ -11,4 +11,5 @@
     <color name="blue">#3598DB</color>
     <color name="colorGrey">#505050</color>
     <color name="colorBlack2">#383838</color>
+    <color name="colorMessageBG">#F8F8F8</color>
 </resources>

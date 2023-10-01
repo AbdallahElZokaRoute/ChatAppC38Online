@@ -6,8 +6,8 @@ data class Message(
     val dateTime: Long? = null,
     val senderName: String? = null,
     val senderId: String? = null,
-
-    ) {
+    val roomId: String? = null
+) {
     companion object {
         const val COLLECTION_NAME = "Messages"
     }

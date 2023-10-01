@@ -7,6 +7,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.route.chatappc38gonline.model.AppUser
 import com.route.chatappc38gonline.database.getUserFromFirestoreDB
+import com.route.chatappc38gonline.model.DataUtils
 
 class LoginViewModel : ViewModel() {
     val emailState = mutableStateOf("")
@@ -34,11 +35,11 @@ class LoginViewModel : ViewModel() {
     fun sendAuthDataToFirebase() {
         if (validateFields()) {
             showLoading.value = true
-            registerUserToAuth()
+            loginUserToAuth()
         }
     }
 
-    fun registerUserToAuth() {
+    fun loginUserToAuth() {
         auth.signInWithEmailAndPassword(emailState.value, passwordState.value)
             .addOnCompleteListener {
                 showLoading.value = false
@@ -47,7 +48,6 @@ class LoginViewModel : ViewModel() {
 
                     // Add User to cloud Firestore
                     getUserFromFirestore(it.result.user?.uid)
-
                 } else {
                     //show Error Dialog
                     message.value = it.exception?.localizedMessage ?: ""
@@ -66,6 +66,8 @@ class LoginViewModel : ViewModel() {
             uid!!, onSuccessListener = {
                 val appUser = it.toObject(AppUser::class.java)
                 // callback
+                DataUtils.appUser = appUser
+                DataUtils.firebaseUser = auth.currentUser
                 navigator?.openHomeActivity()
                 showLoading.value = false
             }, onFailureListener = {

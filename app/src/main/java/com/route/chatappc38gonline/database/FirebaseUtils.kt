@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -94,5 +95,6 @@ fun addMessageToFirestoreDB(
 fun getMessagesFromFirestoreDB(roomId: String, listener: EventListener<QuerySnapshot>) {
     val messageCollection = getMessagesRef(roomId = roomId)
     messageCollection
+        .orderBy("dateTime", Query.Direction.DESCENDING)
         .addSnapshotListener(listener)
 }

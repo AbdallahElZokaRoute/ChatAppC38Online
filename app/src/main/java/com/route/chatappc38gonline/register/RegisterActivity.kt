@@ -1,6 +1,7 @@
 package com.route.chatappc38gonline.register
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -51,25 +52,33 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.route.chatappc38gonline.R
+import com.route.chatappc38gonline.home.HomeActivity
 import com.route.chatappc38gonline.register.ui.theme.ChatAppC38GOnlineTheme
 
-class RegisterActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity(), Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ChatAppC38GOnlineTheme {
                 // A surface container using the 'background' color from the theme
-                RegisterContent()
+                RegisterContent(navigator = this)
             }
         }
+    }
+
+    override fun navigateToHome() {
+        val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterContent(viewModel: RegisterViewModel = viewModel()) {
+fun RegisterContent(viewModel: RegisterViewModel = viewModel(), navigator: Navigator) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -101,7 +110,7 @@ fun RegisterContent(viewModel: RegisterViewModel = viewModel()) {
                 viewModel.sendAuthDataToFirebase()
             }
             LoadingDialog()
-            ChatAlertDialog()
+            ChatAlertDialog(navigator = navigator)
         }
     }
 }
@@ -171,7 +180,8 @@ fun LoadingDialog(viewModel: RegisterViewModel = viewModel()) {
 
 
 @Composable
-fun ChatAlertDialog(viewModel: RegisterViewModel = viewModel()) {
+fun ChatAlertDialog(viewModel: RegisterViewModel = viewModel(), navigator: Navigator) {
+    viewModel.navigator = navigator
     if (viewModel.message.value.isNotEmpty())
         AlertDialog(
 
@@ -191,7 +201,11 @@ fun ChatAlertDialog(viewModel: RegisterViewModel = viewModel()) {
 @Composable
 @Preview(name = "Preview")
 fun ChatAlertDialogPreview() {
-    ChatAlertDialog()
+    ChatAlertDialog(navigator = object : Navigator {
+        override fun navigateToHome() {
+
+        }
+    })
 }
 
 @Composable
@@ -229,6 +243,10 @@ fun ChatButton(buttonText: String, onButtonClick: () -> Unit) {
 @Composable
 fun GreetingPreview2() {
     ChatAppC38GOnlineTheme {
-        RegisterContent()
+        RegisterContent(navigator = object : Navigator {
+            override fun navigateToHome() {
+
+            }
+        })
     }
 }

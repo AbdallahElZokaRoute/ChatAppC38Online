@@ -7,6 +7,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.route.chatappc38gonline.model.AppUser
 import com.route.chatappc38gonline.database.addUserToFirestoreDB
+import com.route.chatappc38gonline.database.getUserFromFirestoreDB
+import com.route.chatappc38gonline.model.DataUtils
 
 class RegisterViewModel : ViewModel() {
     val firstNameState = mutableStateOf("")
@@ -18,6 +20,21 @@ class RegisterViewModel : ViewModel() {
     val showLoading = mutableStateOf(false)
     val message = mutableStateOf("")
     val auth = Firebase.auth
+    var navigator: Navigator? = null
+    fun getUserFromFirestore() {
+        getUserFromFirestoreDB(
+            auth.currentUser?.uid!!,
+            onSuccessListener = {
+                DataUtils.appUser = it.toObject(AppUser::class.java)
+                DataUtils.firebaseUser = auth.currentUser
+
+            },
+            onFailureListener = {
+                // navigate to Login
+                Log.e("Tag", "${it.localizedMessage}")
+            })
+    }
+
     fun validateFields(): Boolean {
         if (firstNameState.value.isEmpty() || firstNameState.value.isBlank()) {
             firstNameError.value = "First name required"
@@ -71,8 +88,9 @@ class RegisterViewModel : ViewModel() {
                 firstName = firstNameState.value,
                 email = emailState.value
             ), onSuccessListener = {
-                message.value = "Successful Registration"
                 showLoading.value = false
+                getUserFromFirestore()
+                navigator?.navigateToHome()
             }, onFailureListener = {
                 showLoading.value = false
                 message.value = it.localizedMessage ?: ""

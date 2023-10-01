@@ -9,4 +9,5 @@
     <string name="room_title">Room Title</string>
     <string name="room_desc">Room Description</string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="send">Send</string>
 </resources>
